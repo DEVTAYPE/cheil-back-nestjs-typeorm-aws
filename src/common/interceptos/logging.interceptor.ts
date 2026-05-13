@@ -1,19 +1,15 @@
 import {
   CallHandler,
   ExecutionContext,
-  Inject,
   Injectable,
+  Logger,
   NestInterceptor,
 } from '@nestjs/common';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { Observable, tap } from 'rxjs';
-import { Logger } from 'winston';
+import { Observable, catchError, tap } from 'rxjs';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  constructor(
-    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
-  ) {}
+  private readonly logger = new Logger('HTTP');
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest<{
@@ -31,13 +27,15 @@ export class LoggingInterceptor implements NestInterceptor {
           .getResponse<{ statusCode: number }>();
         const duration = Date.now() - start;
         this.logger.log(
-          'info',
-          `${method} ${url} ${response.statusCode} ${duration}ms`,
-          {
-            ip,
-            context: 'HTTP',
-          },
+          `${method} ${url} ${response.statusCode} — ${duration}ms [${ip}]`,
         );
+      }),
+      catchError((error) => {
+        const duration = Date.now() - start;
+        this.logger.error(
+          `${method} ${url} ${error.status || 500} — ${duration}ms [${ip}] Error: ${error.message}`,
+        );
+        throw error;
       }),
     );
   }

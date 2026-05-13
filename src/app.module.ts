@@ -8,6 +8,7 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { LoggingInterceptor } from './common/interceptos/logging.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -45,6 +46,12 @@ import { PrismaModule } from './prisma/prisma.module';
         }),
       ],
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60,
+        limit: 5,
+      },
+    ]),
     PrismaModule,
     AuthModule,
   ],

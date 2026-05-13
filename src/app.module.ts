@@ -12,6 +12,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { CategoryModule } from './categories/categories.module';
 import { ProductosModule } from './products/products.module';
 import { TransformInterceptor } from './common/interceptos/transform.intercepto';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { TransformInterceptor } from './common/interceptos/transform.intercepto'
     AuthModule,
     CategoryModule,
     ProductosModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [

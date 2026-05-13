@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
   BadRequestException,
   Body,
@@ -105,7 +103,20 @@ export class ProductosController {
   }
 
   @Post(':id/imagen')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fileSize: 5 * 1024 * 1024 },
+      fileFilter: (_req, file, cb) => {
+        if (!file.mimetype.startsWith('image/')) {
+          return cb(
+            new BadRequestException('Solo se permiten imágenes'),
+            false,
+          );
+        }
+        cb(null, true);
+      },
+    }),
+  )
   @ApiOperation({ summary: 'Subir imagen del producto a S3 (bonus)' })
   @ApiParam({ name: 'id', type: Number, example: 1 })
   @ApiResponse({
@@ -114,7 +125,7 @@ export class ProductosController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Archivo inválido o S3 no configurado',
+    description: 'Archivo inválido, excede 5MB o S3 no configurado',
   })
   uploadImagen(
     @Param('id', ParseIntPipe) id: number,

@@ -67,7 +67,7 @@ export class ProductsService {
     return ProductResponseDto.fromEntity(updated);
   }
 
-  async removeListProductsDto(id: number): Promise<void> {
+  async remove(id: number): Promise<void> {
     const producto = await this.repository.findById(id);
     if (!producto) throw new NotFoundProductException(id);
     await this.repository.softDelete(id);

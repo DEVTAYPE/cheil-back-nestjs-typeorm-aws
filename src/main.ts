@@ -16,7 +16,19 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      hsts: false,
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+        },
+      },
+    }),
+  );
   app.enableCors({
     origin: configService
       .get<string>('CORS_ORIGINS', 'http://localhost:3001')

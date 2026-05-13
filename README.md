@@ -4,6 +4,12 @@ REST API para gestión de productos y categorías con autenticación JWT.
 
 [![CI](https://github.com/taypedev/cheil-backend-nestjs/actions/workflows/ci.yml/badge.svg)](https://github.com/taypedev/cheil-backend-nestjs/actions)
 
+<!-- GANCHO PARA MANDAR A DEPLOY -->
+
+> Si quieres ver la API en producción, puedes acceder a: []()
+
+> o quieres aprender a desplegar sigue la guia de despliegue en el MD de despliegue en AWS. [archivo de despliegue](./DEPLOY.md)
+
 ## Stack
 
 | Tecnología     | Versión | Uso                  |

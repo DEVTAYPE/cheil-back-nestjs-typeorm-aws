@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ICategoryRepository } from './repositories/category.repository.interface';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { CategoryResponseDto } from './dto/category-response.dto';
 import {
+  CategoryWithProductsException,
   DuplicateNameException,
   NotFoundCategoryException,
 } from 'src/common/exceptions';
+import { CategoryResponseDto } from './dto/category-response.dto';
+import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { ICategoryRepository } from './repositories/category.repository.interface';
 
 @Injectable()
 export class CategoryService {
@@ -51,6 +52,11 @@ export class CategoryService {
   async remove(id: number): Promise<void> {
     const categoria = await this.repository.findById(id);
     if (!categoria) throw new NotFoundCategoryException(id);
+
+    const activeProducts = await this.repository.countActiveProducts(id);
+    if (activeProducts > 0)
+      throw new CategoryWithProductsException(id, activeProducts);
+
     await this.repository.softDelete(id);
   }
 }

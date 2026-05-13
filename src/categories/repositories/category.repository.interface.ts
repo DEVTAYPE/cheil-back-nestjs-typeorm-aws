@@ -8,5 +8,6 @@ export abstract class ICategoryRepository {
   abstract findById(id: number): Promise<Categoria | null>;
   abstract findByNombre(nombre: string): Promise<Categoria | null>;
   abstract update(id: number, data: UpdateCategoryDto): Promise<Categoria>;
+  abstract countActiveProducts(categoriaId: number): Promise<number>;
   abstract softDelete(id: number): Promise<void>;
 }

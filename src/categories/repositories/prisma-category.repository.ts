@@ -36,6 +36,12 @@ export class PrismaCategoryRepository implements ICategoryRepository {
     return this.prisma.categoria.update({ where: { id }, data });
   }
 
+  countActiveProducts(categoriaId: number): Promise<number> {
+    return this.prisma.producto.count({
+      where: { categoriaId, deletedAt: null },
+    });
+  }
+
   async softDelete(id: number): Promise<void> {
     await this.prisma.categoria.update({
       where: { id },

@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ICategoryRepository } from './repositories/category.repository.interface';
 import { CategoryService } from './categories.service';
 import {
+  CategoryWithProductsException,
   DuplicateNameException,
   NotFoundCategoryException,
 } from 'src/common/exceptions';
@@ -13,6 +14,7 @@ const mockRepo: jest.Mocked<ICategoryRepository> = {
   findById: jest.fn(),
   findByNombre: jest.fn(),
   update: jest.fn(),
+  countActiveProducts: jest.fn(),
   softDelete: jest.fn(),
 };
 
@@ -100,8 +102,9 @@ describe('CategoryService', () => {
   });
 
   describe('remove', () => {
-    it('should call softDelete with correct id', async () => {
+    it('should call softDelete when category has no active products', async () => {
       mockRepo.findById.mockResolvedValue(mockCategoria);
+      mockRepo.countActiveProducts.mockResolvedValue(0);
       mockRepo.softDelete.mockResolvedValue(undefined);
 
       await service.remove(1);
@@ -115,5 +118,15 @@ describe('CategoryService', () => {
         NotFoundCategoryException,
       );
     });
+  });
+
+  it('should throw CategoriaConProductosException when category has active products', async () => {
+    mockRepo.findById.mockResolvedValue(mockCategoria);
+    mockRepo.countActiveProducts.mockResolvedValue(3);
+
+    await expect(service.remove(1)).rejects.toThrow(
+      CategoryWithProductsException,
+    );
+    expect(mockRepo.softDelete).not.toHaveBeenCalled();
   });
 });

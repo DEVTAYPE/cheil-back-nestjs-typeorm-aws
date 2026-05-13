@@ -21,7 +21,7 @@ export class PrismaService
 
     const adapterConfig = {
       connectionString: databaseUrl,
-      // ssl: { rejectUnauthorized: false },
+      ssl: { rejectUnauthorized: false },
       connectionTimeoutMillis: 5000,
       options: '-c statement_timeout=8000',
     };

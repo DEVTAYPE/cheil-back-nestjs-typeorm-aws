@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Injectable,
   InternalServerErrorException,
@@ -25,8 +27,12 @@ export class AuthService {
     try {
       user = await this.prisma.usuario.findUnique({ where: { email } });
     } catch (error) {
-      this.logger.error(`DB error on login: ${error instanceof Error ? error.message : String(error)}`);
-      throw new InternalServerErrorException('Error al conectar con la base de datos');
+      this.logger.error(
+        `DB error on login: ${error instanceof Error ? error.message : String(error)}`,
+      );
+      throw new InternalServerErrorException(
+        'Error al conectar con la base de datos',
+      );
     }
 
     // lanzamos una excepción de autenticación

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
 import { Producto } from '../../../generated/prisma/client';
 import { PaginatedResult } from '../../common/dto/paginated-result.interface';

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import * as Joi from 'joi';
 import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
         CORS_ORIGINS: Joi.string().default('http://localhost:3001'),
       }),
     }),
+    PrismaModule,
   ],
   controllers: [AppController],
 })

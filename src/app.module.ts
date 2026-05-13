@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { LoggingInterceptor } from './common/interceptos/logging.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { CategoryModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     ]),
     PrismaModule,
     AuthModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [

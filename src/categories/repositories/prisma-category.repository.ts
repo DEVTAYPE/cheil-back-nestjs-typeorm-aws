@@ -6,7 +6,7 @@ import { ICategoryRepository } from './category.repository.interface';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 
 @Injectable()
-export class PrismaCategoriaRepository implements ICategoryRepository {
+export class PrismaCategoryRepository implements ICategoryRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   create(data: CreateCategoryDto): Promise<Categoria> {

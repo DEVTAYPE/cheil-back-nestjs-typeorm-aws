@@ -36,6 +36,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Prisma client
+        # para evitar error de tipos
+        run: npx prisma generate
+
       - name: Lint
         run: pnpm run lint
 

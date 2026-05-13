@@ -1,98 +1,257 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Cheil Perú — Backend API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+REST API para gestión de productos y categorías con autenticación JWT.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+[![CI](https://github.com/taypedev/cheil-backend-nestjs/actions/workflows/ci.yml/badge.svg)](https://github.com/taypedev/cheil-backend-nestjs/actions)
 
-## Description
+## Stack
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+| Tecnología     | Versión | Uso                  |
+| -------------- | ------- | -------------------- |
+| NestJS         | 11      | Framework            |
+| Prisma         | 7       | ORM                  |
+| PostgreSQL     | 16      | Base de datos        |
+| JWT / Passport | —       | Autenticación        |
+| Swagger        | —       | Documentación de API |
+| Docker         | —       | Entorno local        |
+| Jest           | 29      | Tests                |
 
-## Project setup
+## Requisitos
 
-```bash
-$ pnpm install
-```
+- Node.js 20+
+- pnpm
+- Docker Desktop
 
-## Compile and run the project
+## Setup local
+
+### 1. Clonar e instalar
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+git clone https://github.com/DEVTAYPE/cheil-back-nestjs-typeorm-aws.git
+cd cheil-backend-nestjs
+pnpm install
 ```
 
-## Run tests
+### 2. Variables de entorno
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+cp .env.example .env
 ```
 
-## Deployment
+Editar `.env` con los valores correspondientes. El `.env.example` contiene:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+```env
+PORT=3000
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/cheil_db"
+JWT_SECRET="mínimo 32 caracteres — generar con: openssl rand -hex 32"
+JWT_EXPIRES_IN="1d"
+CORS_ORIGINS="http://localhost:3001"
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=cheil_db
+```
+
+> El puerto es **5433** para no conflictuar con PostgreSQL local en 5432.
+
+### 3. Levantar base de datos
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+docker-compose up -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Servicios disponibles:
 
-## Resources
+- PostgreSQL: `localhost:5433`
+- pgAdmin: `http://localhost:5050` (admin@cheil.pe / admin123)
 
-Check out a few resources that may come in handy when working with NestJS:
+### 4. Migraciones
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+npx prisma migrate deploy
+```
 
-## Support
+### 5. Datos de prueba
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+npx prisma db seed
+```
 
-## Stay in touch
+Crea: 1 usuario admin, 3 categorías y 3 productos de ejemplo.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+Email:    admin@cheil.pe
+Password: Admin123!
+```
 
-## License
+### 6. Iniciar servidor
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+pnpm run start:dev
+```
+
+Servidor en: `http://localhost:3000`
+Swagger UI en: `http://localhost:3000/api/docs`
+
+---
+
+## Autenticación
+
+Todos los endpoints de productos y categorías requieren un JWT válido.
+
+**1. Obtener token:**
+
+```http
+POST /api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@cheil.pe",
+  "password": "Admin123!"
+}
+```
+
+Respuesta:
+
+```json
+{
+  "success": true,
+  "data": {
+    "access_token": "eyJhbGci...",
+    "token_type": "Bearer"
+  }
+}
+```
+
+**2. Usar el token en los requests:**
+
+```http
+Authorization: Bearer eyJhbGci...
+```
+
+---
+
+## Endpoints
+
+### Auth
+
+| Método | Ruta                 | Auth | Descripción    |
+| ------ | -------------------- | ---- | -------------- |
+| POST   | `/api/v1/auth/login` | ✗    | Iniciar sesión |
+
+### Categorías
+
+| Método | Ruta                     | Auth | Descripción            |
+| ------ | ------------------------ | ---- | ---------------------- |
+| POST   | `/api/v1/categorias`     | ✓    | Crear categoría        |
+| GET    | `/api/v1/categorias`     | ✓    | Listar categorías      |
+| GET    | `/api/v1/categorias/:id` | ✓    | Obtener por ID         |
+| PATCH  | `/api/v1/categorias/:id` | ✓    | Actualizar             |
+| DELETE | `/api/v1/categorias/:id` | ✓    | Eliminar (soft delete) |
+
+### Productos
+
+| Método | Ruta                    | Auth | Descripción            |
+| ------ | ----------------------- | ---- | ---------------------- |
+| POST   | `/api/v1/productos`     | ✓    | Crear producto         |
+| GET    | `/api/v1/productos`     | ✓    | Listar con paginación  |
+| GET    | `/api/v1/productos/:id` | ✓    | Obtener por ID         |
+| PATCH  | `/api/v1/productos/:id` | ✓    | Actualizar             |
+| DELETE | `/api/v1/productos/:id` | ✓    | Eliminar (soft delete) |
+
+### Listado de productos — Query params
+
+```
+GET /api/v1/productos?page=1&limit=10&nombre=laptop&categoriaId=1&precioMin=100&precioMax=5000
+```
+
+| Param         | Tipo   | Default | Descripción                      |
+| ------------- | ------ | ------- | -------------------------------- |
+| `page`        | number | 1       | Página                           |
+| `limit`       | number | 10      | Resultados por página (máx. 100) |
+| `nombre`      | string | —       | Búsqueda parcial por nombre      |
+| `categoriaId` | number | —       | Filtrar por categoría            |
+| `precioMin`   | number | —       | Precio mínimo                    |
+| `precioMax`   | number | —       | Precio máximo                    |
+
+Respuesta paginada:
+
+```json
+{
+  "success": true,
+  "data": {
+    "items": [ ... ],
+    "total": 50,
+    "page": 1,
+    "lastPage": 5,
+    "limit": 10
+  }
+}
+```
+
+### Otros
+
+| Método | Ruta             | Auth | Descripción           |
+| ------ | ---------------- | ---- | --------------------- |
+| GET    | `/api/v1/health` | ✗    | Estado de la API y BD |
+
+---
+
+## Formato de respuestas
+
+**Éxito:**
+
+```json
+{
+  "success": true,
+  "data": { ... },
+  "message": "OK",
+  "timestamp": "2026-05-13T10:00:00.000Z"
+}
+```
+
+**Error:**
+
+```json
+{
+  "success": false,
+  "statusCode": 404,
+  "message": "Producto #5 no encontrado",
+  "code": "PRODUCTO_NOT_FOUND",
+  "path": "/api/v1/productos/5",
+  "timestamp": "2026-05-13T10:00:00.000Z"
+}
+```
+
+---
+
+## Tests
+
+```bash
+# Unit tests
+pnpm run test
+
+# E2E tests
+pnpm run test:e2e
+
+# Cobertura
+pnpm run test:cov
+```
+
+---
+
+## Estructura del proyecto
+
+```
+src/
+├── auth/           # Login, JWT strategy, guard, @CurrentUser
+├── categorias/     # CRUD categorías con repository pattern
+├── productos/      # CRUD productos con paginación y filtros
+├── prisma/         # PrismaService + módulo global
+├── health/         # Health check endpoint
+└── common/
+    ├── dto/        # PaginationDto, PaginatedResult<T>
+    ├── exceptions/ # Excepciones de dominio tipadas
+    ├── filters/    # HttpExceptionFilter global
+    └── interceptors/ # LoggingInterceptor, TransformInterceptor
+```

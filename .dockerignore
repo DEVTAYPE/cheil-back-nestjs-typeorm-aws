@@ -1,0 +1,12 @@
+node_modules/
+dist/
+generated/
+.env
+.env.*
+*.log
+logs/
+coverage/
+.git/
+.github/
+*.md
+prisma/dev.db

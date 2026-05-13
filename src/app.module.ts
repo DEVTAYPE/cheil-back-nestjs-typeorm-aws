@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { LoggingInterceptor } from './common/interceptos/logging.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { CategoryModule } from './categories/categories.module';
+import { ProductosModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -30,6 +32,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
             winston.format.errors({ stack: true }),
             winston.format.colorize(),
             winston.format.printf(({ timestamp, level, message, context }) => {
+              // eslint-disable-next-line @typescript-eslint/no-base-to-string
               const ctx = context ? ` [${String(context)}]` : '';
               return `${String(timestamp)} ${level}${ctx}: ${String(message)}`;
             }),
@@ -54,6 +57,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
     ]),
     PrismaModule,
     AuthModule,
+    CategoryModule,
+    ProductosModule,
   ],
   controllers: [AppController],
   providers: [

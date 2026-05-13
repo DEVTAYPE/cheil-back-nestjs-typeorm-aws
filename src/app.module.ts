@@ -13,6 +13,8 @@ import { CategoryModule } from './categories/categories.module';
 import { ProductosModule } from './products/products.module';
 import { TransformInterceptor } from './common/interceptos/transform.intercepto';
 import { HealthModule } from './health/health.module';
+import { S3Module } from './s3/s3.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -20,10 +22,18 @@ import { HealthModule } from './health/health.module';
       isGlobal: true,
       validationSchema: Joi.object({
         PORT: Joi.number().default(3000),
+        NODE_ENV: Joi.string().default('development'),
         DATABASE_URL: Joi.string().required(),
         JWT_SECRET: Joi.string().min(32).required(),
         JWT_EXPIRES_IN: Joi.string().default('1d'),
         CORS_ORIGINS: Joi.string().default('http://localhost:3001'),
+        // AWS — opcional
+        AWS_REGION: Joi.string().optional(),
+        AWS_ACCESS_KEY_ID: Joi.string().optional(),
+        AWS_SECRET_ACCESS_KEY: Joi.string().optional(),
+        AWS_S3_BUCKET: Joi.string().optional(),
+        AWS_SES_FROM_EMAIL: Joi.string().email().optional(),
+        AWS_SES_ADMIN_EMAIL: Joi.string().email().optional(),
       }),
     }),
     WinstonModule.forRoot({
@@ -62,6 +72,8 @@ import { HealthModule } from './health/health.module';
     CategoryModule,
     ProductosModule,
     HealthModule,
+    S3Module,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [

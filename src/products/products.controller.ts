@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,13 +13,11 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { ListProductsDto } from './dto/list-products.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -25,6 +26,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CreateProductDto } from './dto/create-product.dto';
+import { ListProductsDto } from './dto/list-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductsService } from './products.service';
 
 @ApiTags('Productos')
 @ApiBearerAuth('access-token')
@@ -96,5 +102,26 @@ export class ProductosController {
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.remove(id);
+  }
+
+  @Post(':id/imagen')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Subir imagen del producto a S3 (bonus)' })
+  @ApiParam({ name: 'id', type: Number, example: 1 })
+  @ApiResponse({
+    status: 201,
+    description: 'Imagen subida y URL guardada en el producto',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Archivo inválido o S3 no configurado',
+  })
+  uploadImagen(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file)
+      throw new BadRequestException('El archivo de imagen es requerido');
+    return this.productsService.uploadImagen(id, file.buffer, file.mimetype);
   }
 }

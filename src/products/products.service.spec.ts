@@ -7,6 +7,8 @@ import {
   InvalidCategoryException,
   NotFoundProductException,
 } from 'src/common/exceptions';
+import { S3Service } from 'src/s3/s3.service';
+import { EmailService } from 'src/email/email.service';
 
 const mockRepo: jest.Mocked<IProductoRepository> = {
   create: jest.fn(),
@@ -47,6 +49,20 @@ describe('ProductsService', () => {
         ProductsService,
         { provide: IProductoRepository, useValue: mockRepo },
         { provide: PrismaService, useValue: mockPrisma },
+        {
+          provide: S3Service,
+          useValue: {
+            isConfigured: false,
+            uploadImage: jest.fn(),
+            deleteImage: jest.fn(),
+          },
+        },
+        {
+          provide: EmailService,
+          useValue: {
+            sendProductoCreado: jest.fn().mockResolvedValue(undefined),
+          },
+        },
       ],
     }).compile();
 

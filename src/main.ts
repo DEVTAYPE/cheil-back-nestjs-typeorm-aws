@@ -1,9 +1,8 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { VersioningType } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { LoggingInterceptor } from './common/interceptos/logging.interceptor';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -18,9 +17,17 @@ async function bootstrap() {
     defaultVersion: '1',
   });
 
-  app.useGlobalInterceptors(
-    new LoggingInterceptor(app.get(WINSTON_MODULE_NEST_PROVIDER)),
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
   );
+
+  // app.useGlobalInterceptors(
+  //   new LoggingInterceptor(app.get(WINSTON_MODULE_NEST_PROVIDER)),
+  // );
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3000);

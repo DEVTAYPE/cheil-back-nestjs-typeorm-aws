@@ -1,10 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import * as Joi from 'joi';
 import { ConfigModule } from '@nestjs/config';
-import { PrismaModule } from './prisma/prisma.module';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import * as Joi from 'joi';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
+import { AppController } from './app.controller';
+import { AuthModule } from './auth/auth.module';
+import { LoggingInterceptor } from './common/interceptos/logging.interceptor';
+import { PrismaModule } from './prisma/prisma.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -42,8 +46,21 @@ import * as winston from 'winston';
         }),
       ],
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60,
+        limit: 5,
+      },
+    ]),
     PrismaModule,
+    AuthModule,
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}

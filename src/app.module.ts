@@ -11,6 +11,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CategoryModule } from './categories/categories.module';
 import { ProductosModule } from './products/products.module';
+import { TransformInterceptor } from './common/interceptos/transform.intercepto';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -59,6 +61,7 @@ import { ProductosModule } from './products/products.module';
     AuthModule,
     CategoryModule,
     ProductosModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
@@ -66,6 +69,8 @@ import { ProductosModule } from './products/products.module';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
+
+    { provide: APP_INTERCEPTOR, useClass: TransformInterceptor },
   ],
 })
 export class AppModule {}

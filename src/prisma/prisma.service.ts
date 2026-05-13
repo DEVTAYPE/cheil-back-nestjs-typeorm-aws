@@ -18,16 +18,13 @@ export class PrismaService
   constructor(configService: ConfigService) {
     // Prisma 7 requires an explicit driver adapter
     const databaseUrl = configService.get<string>('DATABASE_URL');
-    const nodeEnv = configService.get<string>('NODE_ENV', 'development');
 
     const adapterConfig = {
       connectionString: databaseUrl,
-      // Solo usar rejectUnauthorized: true en producción con certificados válidos
-      // Para desarrollo en AWS, confiar en RDS con sslmode=require en la URL
-      ...(nodeEnv === 'development' && { ssl: { rejectUnauthorized: false } }),
+      // AWS RDS usa certificados auto-firmados, necesitamos confiar en ellos
+      // incluso en producción para que funcione correctamente
+      ssl: { rejectUnauthorized: false },
     };
-
-    // this.logger.debug(`Conectando a base de datos en modo ${nodeEnv}`);
 
     const adapter = new PrismaPg(adapterConfig);
     super({ adapter });

@@ -1,9 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
   DeleteObjectCommand,
   PutObjectCommand,
   S3Client,
+  S3ServiceException,
 } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 
@@ -45,14 +46,26 @@ export class S3Service {
     const extension = mimetype.split('/')[1] ?? 'jpg';
     const key = `productos/${randomUUID()}.${extension}`;
 
-    await this.client.send(
-      new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: key,
-        Body: buffer,
-        ContentType: mimetype,
-      }),
-    );
+    try {
+      await this.client.send(
+        new PutObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+          Body: buffer,
+          ContentType: mimetype,
+        }),
+      );
+    } catch (error) {
+      if (error instanceof S3ServiceException) {
+        this.logger.error(`S3 error [${error.name}]: ${error.message}`);
+        throw new ServiceUnavailableException(
+          error.name === 'AccessDenied'
+            ? 'El servidor no tiene permisos para subir imágenes a S3'
+            : 'Error al subir imagen a S3',
+        );
+      }
+      throw error;
+    }
 
     const url = `https://${this.bucket}.s3.amazonaws.com/${key}`;
     this.logger.log(`Image uploaded: ${url}`);

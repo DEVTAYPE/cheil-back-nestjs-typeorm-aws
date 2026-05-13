@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Producto } from '../../../generated/prisma/client';
+import { Prisma, Producto } from '../../../generated/prisma/client';
 import { PaginatedResult } from '../../common/dto/paginated-result.interface';
 import { PrismaService } from '../../prisma/prisma.service';
 import { IProductoRepository } from './product.repository.interface';
@@ -95,7 +95,10 @@ export class PrismaProductRepository implements IProductoRepository {
     return {
       deletedAt: null,
       ...(filters.nombre && {
-        nombre: { contains: filters.nombre },
+        nombre: {
+          contains: filters.nombre.trim(),
+          mode: Prisma.QueryMode.insensitive,
+        },
       }),
       ...(filters.categoriaId && { categoriaId: filters.categoriaId }),
       ...(filters.precioMin !== undefined && {

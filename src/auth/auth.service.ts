@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
@@ -6,6 +11,8 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
@@ -14,9 +21,13 @@ export class AuthService {
   async login(dto: LoginDto) {
     const email = dto.email.toLowerCase().trim();
 
-    const user = await this.prisma.usuario.findUnique({
-      where: { email },
-    });
+    let user;
+    try {
+      user = await this.prisma.usuario.findUnique({ where: { email } });
+    } catch (error) {
+      this.logger.error(`DB error on login: ${error instanceof Error ? error.message : String(error)}`);
+      throw new InternalServerErrorException('Error al conectar con la base de datos');
+    }
 
     // lanzamos una excepción de autenticación
     if (!user) {

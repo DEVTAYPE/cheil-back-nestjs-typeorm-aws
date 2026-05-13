@@ -21,9 +21,9 @@ export class PrismaService
 
     const adapterConfig = {
       connectionString: databaseUrl,
-      // AWS RDS usa certificados auto-firmados, necesitamos confiar en ellos
-      // incluso en producción para que funcione correctamente
-      ssl: { rejectUnauthorized: false },
+      // ssl: { rejectUnauthorized: false },
+      connectionTimeoutMillis: 5000,
+      options: '-c statement_timeout=8000',
     };
 
     const adapter = new PrismaPg(adapterConfig);

@@ -44,8 +44,8 @@ async function bootstrap() {
   // );
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // Swagger — solo en desarrollo
-  if (configService.get('NODE_ENV') !== 'production') {
+  // Swagger
+  {
     const config = new DocumentBuilder()
       .setTitle('Cheil Perú API')
       .setDescription('API para gestión de productos y categorías')

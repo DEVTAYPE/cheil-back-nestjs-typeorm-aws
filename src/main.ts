@@ -18,17 +18,11 @@ async function bootstrap() {
 
   app.use(
     helmet({
+      contentSecurityPolicy: false,
       hsts: false,
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          styleSrc: ["'self'", "'unsafe-inline'"],
-          scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'], // Agrega cdn.jsdelivr.net si usas versiones recientes
-          imgSrc: ["'self'", 'data:', 'https:'],
-        },
-      },
     }),
   );
+
   app.enableCors({
     origin: configService
       .get<string>('CORS_ORIGINS', 'http://localhost:3001')
@@ -69,8 +63,9 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/cheil/docs', app, document, {
+  SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: { persistAuthorization: true },
+    customSiteTitle: 'Cheil API Docs',
   });
 
   const port = configService.get<number>('PORT', 3000);

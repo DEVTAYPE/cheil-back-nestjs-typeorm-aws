@@ -23,7 +23,7 @@ async function bootstrap() {
         directives: {
           defaultSrc: ["'self'"],
           styleSrc: ["'self'", "'unsafe-inline'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'], // Agrega cdn.jsdelivr.net si usas versiones recientes
           imgSrc: ["'self'", 'data:', 'https:'],
         },
       },
@@ -69,7 +69,7 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document, {
+  SwaggerModule.setup('api/cheil/docs', app, document, {
     swaggerOptions: { persistAuthorization: true },
   });
 
